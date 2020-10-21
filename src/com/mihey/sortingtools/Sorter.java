@@ -1,4 +1,4 @@
-package com.mihey.sortingtool;
+package com.mihey.sortingtools;
 
 public interface Sorter {
 

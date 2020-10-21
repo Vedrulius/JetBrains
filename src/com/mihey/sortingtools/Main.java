@@ -1,4 +1,4 @@
-package com.mihey.sortingtool;
+package com.mihey.sortingtools;
 
 import java.io.*;
 import java.util.ArrayList;

@@ -13,7 +13,7 @@ public class Block {
     private String previousHash;
     private String hash;
 
-    public Block(Block prevBlock) {
+    public Block(Block prevBlock, int minerId, int numberOfZeros) {
         if (prevBlock == null) {
             id = 1;
             previousHash = "0";
@@ -21,6 +21,8 @@ public class Block {
             id = prevBlock.getId() + 1;
             previousHash = prevBlock.getHash();
         }
+        this.minerId=minerId;
+        this.numberOfZeros=numberOfZeros;
         hash = mineBlock(numberOfZeros);
     }
 
@@ -46,8 +48,9 @@ public class Block {
     }
 
     private String mineBlock(int numberOfZeros) {
-        hash = calculateHash();
         Random r = new Random();
+        magicNumber = r.nextInt(99_999_999);
+        hash = calculateHash();
         String prefixString = new String(new char[numberOfZeros]).replace('\0', '0');
         while (!hash.substring(0, numberOfZeros).equals(prefixString)) {
             magicNumber = r.nextInt(99_999_999);

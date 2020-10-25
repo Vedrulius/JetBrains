@@ -1,12 +1,30 @@
 package com.mihey.blockchain;
 
-public class Main {
-    public static void main(String[] args) {
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+public class Main {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+
+        int threads = Runtime.getRuntime().availableProcessors();
         BlockChain blockChain = new BlockChain();
-        for (int i = 0; i < 5; i++) {
-            blockChain.addBlock();
+        ExecutorService executor = Executors.newFixedThreadPool(threads);
+        Set<Callable<Block>> miners = new HashSet<>();
+        for (int i = 1; i <= threads; i++) {
+            Miner miner = new Miner(i, blockChain);
+            miners.add(miner);
         }
+        for (int i = 0; i < 10; i++) {
+            Block currentBlock = executor.invokeAny(miners);
+            blockChain.addBlock(currentBlock);
+            System.out.println(currentBlock);
+        }
+
+
         blockChain.getBlockList().forEach(x -> {
             System.out.println(x);
             if (x.getGenTime() > 60) {
@@ -18,6 +36,7 @@ public class Main {
             }
             System.out.println();
         });
+        executor.shutdownNow();
     }
 }
 
